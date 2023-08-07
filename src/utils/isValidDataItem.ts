@@ -1,6 +1,4 @@
-import { Responses } from 'node-themoviedb';
-
-export type Movie = Responses.Search.Movies['results'][0];
+import { Movie } from '../types';
 
 export function validateMovies(movie: Movie): movie is Movie {
   return (
