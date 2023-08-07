@@ -1,64 +1,31 @@
 import { Request, Response } from 'express';
+import { getRecommendationsFromNeo4j } from './getRecommendationsFromNeo4j';
+import { searchMoviesInElasticsearch } from './searchMoviesInElasticsearch';
+import { getTopRatedFromRedis } from './getTopRatedFromRedis';
+import { getTopRatedFromTmdb } from './getTopRatedFromTmdb';
 
 export const recommendationRouter = async (req: Request, res: Response) => {
-  const userId = req.context.userData.userId;
-  const session = req.context.neo4j;
-  const elasticsearch = req.context.elasticsearch;
-  const tmdb = req.context.tmdb;
-  const redis = req.context.redis;
-
   try {
-    const result = await session.run(
-      `
-            MATCH (targetUser:User {id: $userId})-[:WATCHED]->(:Video)<-[:WATCHED]-(similarUser:User)-[:WATCHED]->(recommended:Video)
-            WHERE NOT (targetUser)-[:WATCHED]->(recommended)
-            RETURN recommended.id AS videoId, COUNT(*) AS commonCount
-            ORDER BY commonCount DESC LIMIT 10;
-            `,
-      { userId }
-    );
+    const recommendations = await getRecommendationsFromNeo4j(req.context);
 
-    const videoRecommendationsIds = result.records
-      .map(record => ({
-        videoId: record.get('videoId').toString(),
-        commonCount: record.get('commonCount').toNumber(),
-      }))
-      .map(item => item.videoId);
-
-    const body = {
-      query: {
-        terms: {
-          id: videoRecommendationsIds,
-        },
-      },
-    };
-
-    const searchResult = await elasticsearch.search({ index: 'movies', body });
-
-    if (searchResult.hits.hits.length) {
-      return res.json(searchResult.hits.hits);
-    }
-    const cachedData = await redis.get('topRated');
-    if (cachedData && cachedData?.length > 0) {
-      return res.json(cachedData);
+    if (recommendations.length) {
+      const movies = await searchMoviesInElasticsearch(
+        req.context.elasticsearch,
+        recommendations
+      );
+      return res.json(movies);
     }
 
-    const cachedTopRated = redis.get('topRated');
+    const cachedTopRated = await getTopRatedFromRedis(req.context.redis);
     if (cachedTopRated) {
-      return res.send(cachedTopRated);
+      return res.json(cachedTopRated);
     }
 
-    const tmdbResponse = await tmdb.movie.getTopRated({
-      query: {
-        page: 1,
-      },
-    });
-    if (tmdbResponse.data.results) {
-      const resData = tmdbResponse.data.results.slice(0, 10);
-      await redis.set('topRated', JSON.stringify(resData), 'EX', 3600);
-      return res.json(resData);
-    }
-    return res.json([]);
+    const topRatedFromTmdb = await getTopRatedFromTmdb(
+      req.context.tmdb,
+      req.context.redis
+    );
+    return res.json(topRatedFromTmdb);
   } catch (error) {
     return res.status(500).send('Failed to fetch recommendations');
   }

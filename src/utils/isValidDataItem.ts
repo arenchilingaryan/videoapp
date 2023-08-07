@@ -1,6 +1,6 @@
 import { Responses } from 'node-themoviedb';
 
-type Movie = Responses.Search.Movies['results'][0];
+export type Movie = Responses.Search.Movies['results'][0];
 
 export function validateMovies(movie: Movie): movie is Movie {
   return (

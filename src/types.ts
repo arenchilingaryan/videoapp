@@ -1,4 +1,5 @@
 import { Request } from 'express';
+import { Responses } from 'node-themoviedb';
 
 export type UserType = {
   email: string;
@@ -15,3 +16,5 @@ export type ErrorValidationType = {
   status: number;
   message: string;
 };
+
+export type Movie = Responses.Search.Movies['results'][0];
