@@ -7,11 +7,13 @@
     "module": "CommonJS",
     "sourceMap": true,
     "moduleResolution": "node",
-    "types": ["node"]
+    "types": ["node"],
+    "skipLibCheck": true
   },
   "ts-node": {
     "files": true
   },
   "files": ["src/types/express.d.ts"],
-  "include": ["src/**/*.ts", "test/**/*.ts", "./src/global"]
+  "include": ["src/**/*.ts", "test/**/*.ts", "./src/global"],
+  "exclude": ["node_modules"]
 }
