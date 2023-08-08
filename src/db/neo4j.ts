@@ -29,7 +29,6 @@ export class Neo4jService {
   }
 
   async createWatchedRelation(userId: string, videoId: string): Promise<any> {
-
     await this.createNodeIfNotExists('User', userId);
     await this.createNodeIfNotExists('Video', videoId);
 
