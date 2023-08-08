@@ -17,7 +17,6 @@ export const handleIndex = async () => {
   try {
     await elasticsearch.indices.delete({ index: 'movies' });
 
-    // Создание нового индекса
     const resp = await elasticsearch.indices.create(indexDefinition);
     console.log(resp);
   } catch (err) {
