@@ -6,11 +6,11 @@ export async function getRecommendationsFromNeo4j(
 
   const result = await session.run(
     `
-      MATCH (targetUser:User {id: $userId})-[:WATCHED]->(:Video)<-[:WATCHED]-(similarUser:User)-[:WATCHED]->(recommended:Video)
-      WHERE NOT (targetUser)-[:WATCHED]->(recommended)
-      RETURN recommended.id AS videoId
-      ORDER BY COUNT(*) DESC LIMIT 10;
-      `,
+            MATCH (targetUser:User {id: $userId})-[:WATCHED]->(:Video)<-[:WATCHED]-(similarUser:User)-[:WATCHED]->(recommended:Video)
+            WHERE NOT (targetUser)-[:WATCHED]->(recommended)
+            RETURN recommended.id AS videoId, COUNT(*) AS commonCount
+            ORDER BY commonCount DESC LIMIT 10;
+            `,
     { userId }
   );
 

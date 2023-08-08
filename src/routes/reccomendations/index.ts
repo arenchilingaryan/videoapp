@@ -27,6 +27,7 @@ export const recommendationRouter = async (req: Request, res: Response) => {
     );
     return res.json(topRatedFromTmdb);
   } catch (error) {
+    console.log(error);
     return res.status(500).send('Failed to fetch recommendations');
   }
 };
