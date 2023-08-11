@@ -1,8 +1,10 @@
+import { db } from '../../db';
+
 export async function getRecommendationsFromNeo4j(
-  context: Express.Request['context']
+  userData: Express.Request['context']['userData']
 ): Promise<string[]> {
-  const userId = context.userData.userId;
-  const session = context.neo4j;
+  const userId = userData.userId;
+  const session = db.neo4j;
 
   const result = await session.run(
     `

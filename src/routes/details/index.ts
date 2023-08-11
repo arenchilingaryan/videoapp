@@ -1,33 +1,27 @@
 import { Request, Response } from 'express';
+import { db } from '../../db';
+import { Movie } from '../../types';
 
 export const detailsRouter = async (req: Request, res: Response) => {
   const videoId = req.query.id;
-  const elasticsearch = req.context.elasticsearch;
-  const redis = req.context.redis;
 
   const cacheKey = `videoDetails:${videoId}`;
 
   try {
-    const cachedData = await redis.get(cacheKey);
+    const cachedData = await db.redis.get(cacheKey);
 
     if (cachedData) {
-      return res.json(JSON.parse(cachedData));
+      return res.json(cachedData);
     }
 
-    const body = {
-      query: {
-        term: {
-          id: videoId,
-        },
-      },
-    };
+    const searchResult = (await db.elasticsearch.searchByIds([
+      videoId,
+    ] as string[])) as Movie[];
 
-    const searchResult = await elasticsearch.search({ index: 'movies', body });
+    if (searchResult.length > 0) {
+      const videoDetails = searchResult;
 
-    if (searchResult.hits.hits.length) {
-      const videoDetails = searchResult.hits.hits[0]._source;
-
-      await redis.set(cacheKey, JSON.stringify(videoDetails), 'EX', 3600);
+      await db.redis.set(cacheKey, videoDetails);
 
       return res.json(videoDetails);
     } else {

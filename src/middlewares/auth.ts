@@ -1,6 +1,7 @@
 import { NextFunction, Response } from 'express';
 import { RequestTypeWithUserData } from '../types';
 import { decodeToken } from '../utils/token';
+import { db } from '../db';
 
 export const authGuard = async (
   req: RequestTypeWithUserData,
@@ -9,14 +10,11 @@ export const authGuard = async (
 ) => {
   const token = req.headers['token'] as string;
 
+  if (!token) return next();
+
   const tokenData = decodeToken(token);
 
-  const prisma = req.context.prisma;
-  const user = await prisma.user.findUnique({
-    where: {
-      email: tokenData?.email,
-    },
-  });
+  const user = await db.prisma.findUserByEmail(tokenData?.email as string);
 
   if (user && req.context.userData) {
     req.context.userData.email = user.email;

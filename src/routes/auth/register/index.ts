@@ -3,11 +3,9 @@ import { validationResult } from 'express-validator';
 import * as admin from 'firebase-admin';
 import { hashPassword } from '../../../utils/hashPassword';
 import { TokenData, encodeToken } from '../../../utils/token';
-import { nanoid } from 'nanoid';
+import { db } from '../../../db';
 
 export const registerRouter = async (req: Request, res: Response) => {
-  const prisma = req.context.prisma;
-
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -16,9 +14,7 @@ export const registerRouter = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
-    const userExists = await prisma.user.findUnique({
-      where: { email },
-    });
+    const userExists = await db.prisma.findUserByEmail(email);
 
     if (userExists) {
       return res
@@ -28,13 +24,7 @@ export const registerRouter = async (req: Request, res: Response) => {
     const hashedPassword = hashPassword(password);
     const newUser = await admin.auth().createUser({ email, password });
 
-    await prisma.user.create({
-      data: {
-        email: email,
-        password: hashedPassword,
-        userId: nanoid(),
-      },
-    });
+    await db.prisma.createUser(email, hashedPassword);
 
     const encodeData: TokenData = {
       email,

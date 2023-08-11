@@ -1,53 +1,27 @@
 import { Request, Response } from 'express';
 import { validateMovies } from '../../utils/isValidDataItem';
-
-require('events').EventEmitter.defaultMaxListeners = 200;
+import { db } from '../../db';
 
 export const searchRouter = async (req: Request, res: Response) => {
   const query = req.query.query as string;
 
-  const esQueryResponse = await req.context.elasticsearch.search({
-    index: 'search_queries',
-    body: {
-      query: {
-        match: { query },
-      },
-    },
-  });
+  const esQueryResponse = await db.elasticsearch.search(
+    query,
+    'search_queries'
+  );
 
-  if (esQueryResponse.hits.hits.length > 0) {
-    const esResultsResponse = await req.context.elasticsearch.search({
-      index: 'movies',
-      body: {
-        query: {
-          match: { title: query },
-        },
-      },
-    });
-    return res.json(esResultsResponse.hits.hits);
+  if (esQueryResponse.length > 0) {
+    const esResultsResponse = await db.elasticsearch.search(query);
+    return res.json(esResultsResponse);
   }
 
-  const tmdbResponse = await req.context.tmdb.search.movies({
-    query: {
-      query,
-    },
-  });
+  const tmdbResponse = await db.tmdb.search(query);
 
   const filteredData = tmdbResponse.data.results.filter(validateMovies);
 
-  filteredData.forEach(async movie => {
-    await req.context.elasticsearch.index({
-      index: 'movies',
-      body: movie,
-    });
-  });
+  db.elasticsearch.indexMovies(filteredData);
 
-  await req.context.elasticsearch.index({
-    index: 'search_queries',
-    body: {
-      query,
-    },
-  });
+  await db.elasticsearch.indexSearchQuery(query);
 
   return res.json(tmdbResponse.data.results);
 };
