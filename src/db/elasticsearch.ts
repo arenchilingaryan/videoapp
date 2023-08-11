@@ -1,7 +1,6 @@
 import { Client } from '@elastic/elasticsearch';
 import { envConfig } from '../config/envConfig';
 import { Movie } from '../types';
-import { SearchHit } from '@elastic/elasticsearch/lib/api/types';
 
 require('events').EventEmitter.defaultMaxListeners = 200;
 
