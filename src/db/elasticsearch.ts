@@ -1,6 +1,7 @@
 import { Client } from '@elastic/elasticsearch';
 import { envConfig } from '../config/envConfig';
 import { Movie } from '../types';
+import { SearchHit } from '@elastic/elasticsearch/lib/api/types';
 
 require('events').EventEmitter.defaultMaxListeners = 200;
 
@@ -50,7 +51,7 @@ class ElasticSearch {
     query: string,
     index = 'movies',
     fields = ['title', 'author', 'description']
-  ): Promise<Movie[]> {
+  ) {
     try {
       const body = {
         query: {
@@ -61,12 +62,12 @@ class ElasticSearch {
         },
       };
 
-      const response = await this.elasticsearch.search({
+      const response = await this.elasticsearch.search<Movie>({
         index,
         body,
       });
 
-      return (response as any).body.hits.hits;
+      return response.hits.hits;
     } catch (error) {
       console.error('ElasticSearch search error:', error);
       throw error;

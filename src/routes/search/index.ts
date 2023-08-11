@@ -5,6 +5,12 @@ import { db } from '../../db';
 export const searchRouter = async (req: Request, res: Response) => {
   const query = req.query.query as string;
 
+  const dataFromRedis = await db.redis.get(query);
+
+  if (dataFromRedis) {
+    return res.json(dataFromRedis);
+  }
+
   const esQueryResponse = await db.elasticsearch.search(
     query,
     'search_queries'
@@ -22,6 +28,8 @@ export const searchRouter = async (req: Request, res: Response) => {
   db.elasticsearch.indexMovies(filteredData);
 
   await db.elasticsearch.indexSearchQuery(query);
+
+  await db.redis.set(query, tmdbResponse.data.results);
 
   return res.json(tmdbResponse.data.results);
 };
