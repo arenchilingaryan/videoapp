@@ -6,5 +6,4 @@ export declare class Neo4jService {
     run(query: string, parameters?: Record<string, any>): Promise<Result>;
     createWatchedRelation(userId: string, videoId: string): Promise<any>;
 }
-declare const driver: Neo4jService;
-export { driver };
+export {};

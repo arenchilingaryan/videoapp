@@ -1,13 +1,25 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.redis = void 0;
+exports.RedisDb = void 0;
 const ioredis_1 = require("ioredis");
-const redis = new ioredis_1.default({
+const redisInit = new ioredis_1.default({
     port: parseInt(process.env.REDIS_PORT),
     host: process.env.REDIS_HOST,
     username: process.env.REDIS_USERNAME,
     password: process.env.REDIS_PASSWORD,
     db: parseInt(process.env.REDIS_DB), // Defaults to 0
 });
-exports.redis = redis;
+class RedisDb {
+    constructor() {
+        this.redis = redisInit;
+    }
+    async get(key) {
+        const res = await this.redis.get(key);
+        return res ? JSON.parse(res) : null;
+    }
+    async set(key, result, exp = 3600) {
+        return await this.redis.set(key, JSON.stringify(result), 'EX', exp);
+    }
+}
+exports.RedisDb = RedisDb;
 //# sourceMappingURL=redis.js.map

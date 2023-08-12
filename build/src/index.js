@@ -17,6 +17,7 @@ const reccomendations_1 = require("./routes/reccomendations");
 const details_1 = require("./routes/details");
 const topRatedRouter_1 = require("./routes/topRatedRouter");
 require("./config/firebase");
+const prometheus_1 = require("./middlewares/prometheus");
 exports.app = express();
 exports.app.use(cors());
 exports.app.use(helmet_1.default.contentSecurityPolicy({
@@ -28,6 +29,7 @@ exports.app.use(helmet_1.default.contentSecurityPolicy({
 exports.app.use(bodyParser.json());
 exports.app.use(db_1.extendContextWithDb);
 exports.app.get('/favicon.ico', (_, res) => res.status(204));
+exports.app.use(prometheus_1.metricsMiddleware);
 exports.app.post('/auth/login', authGuards_1.authCommonGuards, login_1.loginRouter);
 exports.app.post('/auth/register', authGuards_1.authCommonGuards, register_1.registerRouter);
 exports.app.get('/search', search_1.searchRouter);

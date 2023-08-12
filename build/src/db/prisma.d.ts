@@ -1,3 +1,17 @@
 import { PrismaClient } from '@prisma/client';
-declare const prisma: PrismaClient<import(".prisma/client").Prisma.PrismaClientOptions, never, import("@prisma/client/runtime/library").DefaultArgs>;
-export { prisma };
+export declare class PrismaDb {
+    prisma: PrismaClient;
+    constructor();
+    findUserByEmail(email: string): Promise<{
+        id: string;
+        email: string;
+        password: string;
+        userId: string;
+    } | null>;
+    createUser(email: string, hashedPassword: string): Promise<{
+        id: string;
+        email: string;
+        password: string;
+        userId: string;
+    }>;
+}

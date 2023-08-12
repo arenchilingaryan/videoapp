@@ -1,3 +1,7 @@
 import Redis from 'ioredis';
-declare const redis: Redis;
-export { redis };
+export declare class RedisDb {
+    redis: Redis;
+    constructor();
+    get(key: string): Promise<any>;
+    set<T = any>(key: string, result: T, exp?: number): Promise<any>;
+}

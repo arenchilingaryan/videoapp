@@ -2,19 +2,18 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.watchRouter = void 0;
 const TorrentSearchApi = require("torrent-search-api");
+const db_1 = require("../../db");
 TorrentSearchApi.enableProvider('ThePirateBay');
 const watchRouter = async (req, res) => {
     const { title, videoId } = req.body;
     if (!title || !videoId) {
         return res.status(400).send('Title or videoId missing');
     }
-    const redis = req.context.redis;
-    const neo4jService = req.context.neo4j;
     const userId = req.context.userData.userId;
     const cacheKey = `torrents:${title}`;
-    await neo4jService.createWatchedRelation(userId, videoId);
+    await db_1.db.neo4j.createWatchedRelation(userId, videoId);
     let magnetUri;
-    const cachedResult = await redis.get(cacheKey);
+    const cachedResult = await db_1.db.redis.get(cacheKey);
     if (cachedResult) {
         magnetUri = JSON.parse(cachedResult).magnet;
     }
@@ -22,7 +21,7 @@ const watchRouter = async (req, res) => {
         const searchResult = await TorrentSearchApi.search(title, 'Video', 1);
         if (searchResult && searchResult.length > 0) {
             magnetUri = searchResult[0].magnet;
-            await redis.set(cacheKey, JSON.stringify(searchResult[0]), 'EX', 3600);
+            await db_1.db.redis.set(cacheKey, JSON.stringify(searchResult[0]), 3600);
         }
         else {
             return res.status(404).send('Torrent not found');

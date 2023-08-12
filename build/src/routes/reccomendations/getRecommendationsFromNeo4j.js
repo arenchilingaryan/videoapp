@@ -1,9 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getRecommendationsFromNeo4j = void 0;
-async function getRecommendationsFromNeo4j(context) {
-    const userId = context.userData.userId;
-    const session = context.neo4j;
+const db_1 = require("../../db");
+async function getRecommendationsFromNeo4j(userData) {
+    const userId = userData.userId;
+    const session = db_1.db.neo4j;
     const result = await session.run(`
             MATCH (targetUser:User {id: $userId})-[:WATCHED]->(:Video)<-[:WATCHED]-(similarUser:User)-[:WATCHED]->(recommended:Video)
             WHERE NOT (targetUser)-[:WATCHED]->(recommended)

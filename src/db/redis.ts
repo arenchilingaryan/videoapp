@@ -8,7 +8,7 @@ const redisInit = new Redis({
   db: parseInt(process.env.REDIS_DB!), // Defaults to 0
 });
 
-class RedisDb {
+export class RedisDb {
   redis;
   constructor() {
     this.redis = redisInit;
@@ -21,7 +21,3 @@ class RedisDb {
     return await this.redis.set(key, JSON.stringify(result), 'EX', exp);
   }
 }
-
-const redis = new RedisDb();
-
-export { redis };

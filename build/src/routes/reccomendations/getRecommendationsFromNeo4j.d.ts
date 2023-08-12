@@ -1,1 +1,1 @@
-export declare function getRecommendationsFromNeo4j(context: Express.Request['context']): Promise<string[]>;
+export declare function getRecommendationsFromNeo4j(userData: Express.Request['context']['userData']): Promise<string[]>;

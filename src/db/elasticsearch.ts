@@ -4,7 +4,7 @@ import { Movie } from '../types';
 
 require('events').EventEmitter.defaultMaxListeners = 200;
 
-class ElasticSearch {
+export class ElasticSearch {
   elasticsearch: Client;
 
   constructor() {
@@ -93,7 +93,3 @@ class ElasticSearch {
     }
   }
 }
-
-const elasticsearch = new ElasticSearch();
-
-export { elasticsearch };

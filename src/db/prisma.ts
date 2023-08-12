@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { nanoid } from 'nanoid';
 
-class PrismaDb {
+export class PrismaDb {
   prisma: PrismaClient;
 
   constructor() {
@@ -26,7 +26,3 @@ class PrismaDb {
     });
   }
 }
-
-const prisma = new PrismaDb();
-
-export { prisma };

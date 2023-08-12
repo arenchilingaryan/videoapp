@@ -1,2 +1,2 @@
 import { Request, Response } from 'express';
-export declare const topRatedRouter: (req: Request, res: Response) => Promise<Response<any, Record<string, any>>>;
+export declare const topRatedRouter: (_: Request, res: Response) => Promise<Response<any, Record<string, any>>>;

@@ -45,7 +45,3 @@ export class Neo4jService {
     return result;
   }
 }
-
-const driver = new Neo4jService();
-
-export { driver };

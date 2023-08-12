@@ -1,8 +1,8 @@
 import * as MovieDB from 'node-themoviedb';
 import { envConfig } from '../config/envConfig';
 
-class TheMovieDb {
-  tmdb;
+export class TheMovieDb {
+  tmdb: MovieDB;
   constructor() {
     this.tmdb = new MovieDB(envConfig.TMDB_API_KEY);
   }
@@ -26,7 +26,3 @@ class TheMovieDb {
     return response;
   }
 }
-
-const tmdb = new TheMovieDb();
-
-export { tmdb };

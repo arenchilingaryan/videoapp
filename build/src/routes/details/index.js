@@ -1,27 +1,21 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.detailsRouter = void 0;
+const db_1 = require("../../db");
 const detailsRouter = async (req, res) => {
     const videoId = req.query.id;
-    const elasticsearch = req.context.elasticsearch;
-    const redis = req.context.redis;
     const cacheKey = `videoDetails:${videoId}`;
     try {
-        const cachedData = await redis.get(cacheKey);
+        const cachedData = await db_1.db.redis.get(cacheKey);
         if (cachedData) {
-            return res.json(JSON.parse(cachedData));
+            return res.json(cachedData);
         }
-        const body = {
-            query: {
-                term: {
-                    id: videoId,
-                },
-            },
-        };
-        const searchResult = await elasticsearch.search({ index: 'movies', body });
-        if (searchResult.hits.hits.length) {
-            const videoDetails = searchResult.hits.hits[0]._source;
-            await redis.set(cacheKey, JSON.stringify(videoDetails), 'EX', 3600);
+        const searchResult = await db_1.db.elasticsearch.searchByIds([
+            videoId,
+        ]);
+        if (searchResult.length > 0) {
+            const videoDetails = searchResult[0];
+            await db_1.db.redis.set(cacheKey, videoDetails);
             return res.json(videoDetails);
         }
         else {
