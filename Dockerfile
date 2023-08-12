@@ -1,6 +1,8 @@
-FROM node:14
+FROM node:18
 
 WORKDIR /usr/src/app
+
+RUN npm cache clean --force
 
 COPY package*.json ./
 
@@ -8,8 +10,8 @@ RUN npm install
 
 COPY . .
 
-RUN npm run build
+RUN npx tsc
 
 EXPOSE 8080
 
-CMD [ "npm", "start" ]
+CMD [ "node", "build/src/index.js" ]
