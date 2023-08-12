@@ -10,8 +10,6 @@ RUN npm install
 
 COPY . .
 
-RUN npx tsc
-
 EXPOSE 8080
 
-CMD [ "node", "build/src/index.js" ]
+CMD [ "npm", "run", "start" ]
