@@ -14,6 +14,7 @@ import { recommendationRouter } from './routes/reccomendations';
 import { detailsRouter } from './routes/details';
 import { topRatedRouter } from './routes/topRatedRouter';
 import './config/firebase';
+import { metricsMiddleware } from './middlewares/prometheus';
 
 export const app = express();
 
@@ -29,6 +30,7 @@ app.use(
 app.use(bodyParser.json());
 app.use(extendContextWithDb);
 app.get('/favicon.ico', (_, res) => res.status(204));
+app.use(metricsMiddleware);
 
 app.post('/auth/login', authCommonGuards, loginRouter);
 app.post('/auth/register', authCommonGuards, registerRouter);

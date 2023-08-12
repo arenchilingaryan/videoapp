@@ -66,14 +66,14 @@ class ElasticSearch {
         body,
       });
 
-      return response.hits.hits;
+      return response.hits?.hits || null;
     } catch (error) {
       console.error('ElasticSearch search error:', error);
       throw error;
     }
   }
 
-  async searchByIds(videoIds: string[], index = 'movies'): Promise<Movie[]> {
+  async searchByIds(videoIds: string[], index = 'movies') {
     try {
       const body = {
         query: {
@@ -82,11 +82,11 @@ class ElasticSearch {
           },
         },
       };
-      const response = this.elasticsearch.search({
+      const response = await this.elasticsearch.search<Movie>({
         index,
         body,
       });
-      return (response as any).body.hits.hits;
+      return response.hits?.hits || null;
     } catch (error) {
       console.error('ElasticSearch search error:', error);
       throw error;

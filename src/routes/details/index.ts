@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { db } from '../../db';
-import { Movie } from '../../types';
 
 export const detailsRouter = async (req: Request, res: Response) => {
   const videoId = req.query.id;
@@ -14,12 +13,12 @@ export const detailsRouter = async (req: Request, res: Response) => {
       return res.json(cachedData);
     }
 
-    const searchResult = (await db.elasticsearch.searchByIds([
+    const searchResult = await db.elasticsearch.searchByIds([
       videoId,
-    ] as string[])) as Movie[];
+    ] as string[]);
 
     if (searchResult.length > 0) {
-      const videoDetails = searchResult;
+      const videoDetails = searchResult[0];
 
       await db.redis.set(cacheKey, videoDetails);
 
