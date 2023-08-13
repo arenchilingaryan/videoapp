@@ -12,9 +12,33 @@ spec:
       labels:
         app: neo4j
     spec:
+      initContainers:
+        - name: init-neo4j-config
+          image: busybox
+          command:
+            - sh
+            - "-c"
+            - "cp /config-from-map/neo4j.conf /config/neo4j.conf && chown 7474:7687 /config/neo4j.conf"
+          volumeMounts:
+            - name: config-volume
+              mountPath: /config-from-map
+            - name: config-dir
+              mountPath: /config
       containers:
-      - name: neo4j
-        image: neo4j:latest
-        ports:
-        - containerPort: 7474
-        - containerPort: 7687
+        - name: neo4j
+          image: neo4j:4.3
+          env:
+            - name: NEO4J_dbms_config_strict_validation_enabled
+              value: 'false'
+          ports:
+            - containerPort: 7474
+            - containerPort: 7687
+          volumeMounts:
+            - name: config-dir
+              mountPath: /var/lib/neo4j/conf
+      volumes:
+        - name: config-volume
+          configMap:
+            name: neo4j-config
+        - name: config-dir
+          emptyDir: {}
