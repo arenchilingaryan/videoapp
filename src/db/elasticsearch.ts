@@ -10,6 +10,9 @@ export class ElasticSearch {
   constructor() {
     this.elasticsearch = new Client({
       node: `${envConfig.ES_SERVICE}:${envConfig.ES_PORT}`,
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
   }
 
