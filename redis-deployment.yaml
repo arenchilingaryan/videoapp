@@ -13,13 +13,18 @@ spec:
         app: redis
     spec:
       containers:
-      - name: redis
-        image: redis
-        ports:
-        - containerPort: 6379
-        volumeMounts:
-        - name: redis-data
-          mountPath: /data
+        - name: redis
+          image: redis
+          env:
+            - name: REDIS_HOST
+              value: 'redis-service'
+            - name: REDIS_PORT
+              value: '6379'
+          ports:
+            - containerPort: 6379
+          volumeMounts:
+            - name: redis-data
+              mountPath: /data
       volumes:
-      - name: redis-data
-        emptyDir: {}
+        - name: redis-data
+          emptyDir: {}

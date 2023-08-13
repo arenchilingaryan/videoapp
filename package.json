@@ -13,7 +13,7 @@
   "keywords": [],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon src/index.ts",
+    "start": "npx prisma generate && nodemon src/index.ts",
     "lint": "gts lint",
     "clean": "gts clean",
     "compile": "npx tsc",
