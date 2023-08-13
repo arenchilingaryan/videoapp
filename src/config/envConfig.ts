@@ -21,6 +21,7 @@ const envSchema = z.object({
   NEO4J_PASSWORD: z.string(),
   ES_PORT: z.string(),
   TMDB_API_KEY: z.string(),
+  ES_SERVICE: z.string(),
 });
 
 export const envConfig = envSchema.parse(process.env);

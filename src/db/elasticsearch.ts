@@ -9,7 +9,7 @@ export class ElasticSearch {
 
   constructor() {
     this.elasticsearch = new Client({
-      node: `http://localhost:${envConfig.ES_PORT}`,
+      node: `${envConfig.ES_SERVICE}:${envConfig.ES_PORT}`,
     });
   }
 
