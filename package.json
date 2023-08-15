@@ -14,7 +14,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npx prisma generate && nodemon src/index.ts",
-    "start:dev": "cross-env NODE_ENV=development docker-compose up -d && npm run start",
+    "generate": "npx prisma generate",
+    "start:dev": "cross-env NODE_ENV=development npm run generate && bin\\dev.bat",
+    "start:dev:admin": "bin\\runAsAdmin.bat",
     "start:prod": "cross-env NODE_ENV=production minikube start && npx prisma generate && nodemon src/index.ts",
     "lint": "gts lint",
     "clean": "gts clean",

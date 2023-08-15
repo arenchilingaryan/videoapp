@@ -1,0 +1,9 @@
+@echo off
+echo Stopping services on port 8080...
+FOR /F "tokens=5" %%T IN ('netstat -a -n -o ^| findstr :8080 ^| findstr LISTENING') DO (
+    TASKKILL /F /PID %%T
+)
+echo Starting Docker Compose services...
+docker-compose up -d
+echo Starting application with Nodemon...
+npx nodemon \\src\\index.ts 2>&1
