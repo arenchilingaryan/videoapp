@@ -23,5 +23,10 @@ if '%errorlevel%' NEQ '0' (
     pushd "%CD%"
     CD /D "%~dp0"
 :: BatchGotAdmin (run as admin code here)
-    npm run start:dev
+    echo Script Environment: %SCRIPT_ENV%
+    if "%SCRIPT_ENV%"=="prod" (
+        npm run start:prod
+    ) else (
+        npm run start:dev
+    )
 :-------------------------------------
