@@ -14,6 +14,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npx prisma generate && nodemon src/index.ts",
+    "start:dev": "cross-env NODE_ENV=development docker-compose up -d && npm run start",
+    "start:prod": "cross-env NODE_ENV=production minikube start && npx prisma generate && nodemon src/index.ts",
     "lint": "gts lint",
     "clean": "gts clean",
     "compile": "npx tsc",
@@ -27,6 +29,8 @@
     "@types/helmet": "^4.0.0",
     "@types/node": "^20.4.8",
     "@types/torrent-search-api": "^2.0.0",
+    "cross-env": "^7.0.3",
+    "dotenv-cli": "^7.2.1",
     "gts": "^3.1.1",
     "nodemon": "^3.0.1",
     "prisma": "^5.1.1",
@@ -53,6 +57,7 @@
     "neo4j-driver": "^5.11.0",
     "node-themoviedb": "^0.2.8",
     "npm": "^9.8.1",
+    "prom-client": "^14.2.0",
     "torrent-search-api": "^2.1.4",
     "zod": "^3.21.4"
   }
