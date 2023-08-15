@@ -14,6 +14,27 @@ export class ElasticSearch {
         'Content-Type': 'application/json',
       },
     });
+    this.initialize().catch(error => {
+      console.error('Error initializing Elasticsearch indices:', error);
+    });
+  }
+
+  async ensureIndexExists(indexName: string) {
+    const indexExists = await this.elasticsearch.indices.exists({
+      index: indexName,
+    });
+
+    if (!indexExists) {
+      await this.elasticsearch.indices.create({ index: indexName });
+      console.log(`Index ${indexName} created successfully.`);
+    } else {
+      console.log(`Index ${indexName} already exists.`);
+    }
+  }
+
+  async initialize() {
+    await this.ensureIndexExists('movies');
+    await this.ensureIndexExists('search_queries');
   }
 
   async indexSearchQuery(query: string): Promise<void> {
