@@ -8,6 +8,8 @@ RUN npm cache clean --force
 
 COPY package*.json ./
 
+RUN npm install ts-node --save-dev
+
 RUN npm install
 
 COPY . .
