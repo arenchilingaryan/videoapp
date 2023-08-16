@@ -1,14 +1,13 @@
-FROM node:16.13
+FROM node:18
 
 WORKDIR /usr/src/app
-
-ENV NODE_ENV=production
 
 RUN npm cache clean --force
 
 COPY package*.json ./
 
 RUN npm install ts-node --save-dev
+RUN npm install -g ts-node
 
 RUN npm install
 
