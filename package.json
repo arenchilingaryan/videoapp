@@ -13,7 +13,7 @@
   "keywords": [],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx prisma generate && nodemon src/index.ts",
+    "start": "npx prisma generate && npx nodemon src/index.ts",
     "generate": "npx prisma generate",
     "start:dev": "cross-env NODE_ENV=development npm run generate && bin\\dev.bat",
     "start:prod": "cross-env NODE_ENV=production && (npm run generate && bin\\prod.bat)",
