@@ -8,6 +8,9 @@ export class ElasticSearch {
   elasticsearch: Client;
 
   constructor() {
+    console.log('envConfig.ES_SERVICE', envConfig.ES_SERVICE);
+    console.log('envConfig.ES_PORT', envConfig.ES_PORT);
+
     this.elasticsearch = new Client({
       node: `${envConfig.ES_SERVICE}:${envConfig.ES_PORT}`,
       headers: {
