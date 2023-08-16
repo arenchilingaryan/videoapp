@@ -25,4 +25,5 @@ spec:
           mountPath: /usr/share/kibana/data
       volumes:
       - name: kibana-data
-        emptyDir: {}
+        persistentVolumeClaim:
+          claimName: kibana-pvc

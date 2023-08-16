@@ -17,9 +17,3 @@ spec:
         image: arenchill/videoapp:latest
         ports:
         - containerPort: 8080
-        env:
-        - name: DATABASE_URL
-          valueFrom:
-            secretKeyRef:
-              name: db-secret
-              key: database-url

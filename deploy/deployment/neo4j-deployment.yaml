@@ -17,8 +17,8 @@ spec:
           image: busybox
           command:
             - sh
-            - "-c"
-            - "cp /config-from-map/neo4j.conf /config/neo4j.conf && chown 7474:7687 /config/neo4j.conf"
+            - '-c'
+            - 'cp /config-from-map/neo4j.conf /config/neo4j.conf && chown 7474:7687 /config/neo4j.conf'
           volumeMounts:
             - name: config-volume
               mountPath: /config-from-map
@@ -36,9 +36,14 @@ spec:
           volumeMounts:
             - name: config-dir
               mountPath: /var/lib/neo4j/conf
+            - name: neo4j-data
+              mountPath: /data
       volumes:
         - name: config-volume
           configMap:
             name: neo4j-config
         - name: config-dir
           emptyDir: {}
+        - name: neo4j-data
+          persistentVolumeClaim:
+            claimName: neo4j-pvc
