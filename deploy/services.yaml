@@ -4,7 +4,7 @@ metadata:
   name: service-1
 spec:
   selector:
-    app: app-1
+    app: my-app-1
   ports:
     - protocol: TCP
       port: 80
@@ -16,7 +16,7 @@ metadata:
   name: service-2
 spec:
   selector:
-    app: app-2
+    app: my-app-2
   ports:
     - protocol: TCP
       port: 80

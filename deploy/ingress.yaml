@@ -1,8 +1,10 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: my-ingress
+  name: my-canary-ingress
   annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/canary: "true"
     nginx.ingress.kubernetes.io/canary-weight: '20'
 spec:
   rules:
@@ -13,13 +15,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: service-no-autoscale
-            port:
-              number: 80
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: service-with-autoscale
+            name: service-2
             port:
               number: 80
