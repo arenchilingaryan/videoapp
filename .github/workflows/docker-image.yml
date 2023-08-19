@@ -33,3 +33,12 @@ jobs:
           context: .
           push: true
           tags: arenchill/videoapp:latest
+
+      - name: Trigger Deployment
+        run: |
+          curl -X POST \
+               -H "Authorization: token ${{ secrets.TRIGGER_TOKEN }}" \
+               -H "Accept: application/vnd.github.v3+json" \
+               https://api.github.com/repos/arenchilingaryan/videoapp-deployment/dispatches \
+               -d '{"event_type": "trigger-deploy"}'
+        if: github.ref == 'refs/heads/main'
