@@ -15,9 +15,18 @@ import { detailsRouter } from './routes/details';
 import { topRatedRouter } from './routes/topRatedRouter';
 import './config/firebase';
 import { metricsMiddleware } from './middlewares/prometheus';
+import * as promClient from 'prom-client';
+
+const collectDefaultMetrics = promClient.collectDefaultMetrics;
+const register = new promClient.Registry();
+collectDefaultMetrics({ register });
 
 export const app = express();
 
+app.get('/metrics', (_, res) => {
+  res.set('Content-Type', promClient.register.contentType);
+  res.end(promClient.register.metrics());
+});
 app.use(cors());
 app.use(
   helmet.contentSecurityPolicy({
