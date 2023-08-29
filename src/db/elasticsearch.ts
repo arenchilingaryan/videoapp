@@ -12,6 +12,7 @@ export class ElasticSearch {
       node: `${envConfig.ES_SERVICE}:${envConfig.ES_PORT}`,
       headers: {
         'Content-Type': 'application/json',
+        Accept: 'application/json',
       },
     });
     this.initialize().catch(error => {
