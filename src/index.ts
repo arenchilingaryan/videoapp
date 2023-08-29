@@ -23,10 +23,10 @@ collectDefaultMetrics({ register });
 
 export const app = express();
 
-app.get('/metrics', (_, res) => {
+app.get('/metrics', async (_, res) => {
   console.log('send metrics');
   res.set('Content-Type', promClient.register.contentType);
-  res.end(promClient.register.metrics());
+  res.end(await promClient.register.metrics());
 });
 app.use(cors());
 app.use(
