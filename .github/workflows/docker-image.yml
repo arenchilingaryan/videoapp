@@ -49,4 +49,4 @@ jobs:
           ssh-add id_ed25519
 
       - name: Deploy to Server
-        run: ssh -o StrictHostKeyChecking=no "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}" "${{ secrets.DEPLOY_COMMAND }}"
+        run: ssh -o StrictHostKeyChecking=no "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}" "${{ secrets.DEPLOY_COMMAND }}" "echo ${{ secrets.DEPLOY_HOST }}"
