@@ -61,6 +61,20 @@ services:
       - neo4j_go_net
     command: neo4j
 
+  my_service:
+    container_name: my_service_container
+    image: arenchill/videoapp:latest
+    restart: always
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - my_service
+
 volumes:
   elasticsearch-data:
     driver: local

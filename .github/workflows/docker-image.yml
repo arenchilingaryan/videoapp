@@ -34,11 +34,19 @@ jobs:
           push: true
           tags: arenchill/videoapp:latest
 
-      - name: Trigger Deployment
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Setup SSH
         run: |
-          curl -X POST \
-               -H "Authorization: token ${{ secrets.TRIGGER_TOKEN }}" \
-               -H "Accept: application/vnd.github.v3+json" \
-               https://api.github.com/repos/arenchilingaryan/videoapp-deployment/dispatches \
-               -d '{"event_type": "trigger-deploy"}'
-        if: github.ref == 'refs/heads/main'
+          sudo apt-get update
+          sudo apt-get install -y openssh-client
+          eval $(ssh-agent -s)
+          echo "${{ secrets.DEPLOY_KEY_PRIVATE }}" > id_ed25519
+          chmod 600 id_ed25519
+          ssh-add id_ed25519
+
+      - name: Deploy to Server
+        run: ssh -o StrictHostKeyChecking=no "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}" "${{ secrets.DEPLOY_COMMAND }}"
