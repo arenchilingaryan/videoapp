@@ -44,9 +44,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y openssh-client
           eval $(ssh-agent -s)
-          echo "${{ secrets.DEPLOY_KEY_PRIVATE }}" > id_ed25519
-          chmod 600 id_ed25519
-          ssh-add id_ed25519
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          echo "${{ secrets.DEPLOY_KEY_PRIVATE }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-add ~/.ssh/id_ed25519
 
       - name: Deploy to Server
-        run: ssh -o StrictHostKeyChecking=no "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}" "${{ secrets.DEPLOY_COMMAND }}" "echo ${{ secrets.DEPLOY_HOST }}"
+        run: ssh -o StrictHostKeyChecking=no "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}" "${{ secrets.DEPLOY_COMMAND }}"
